@@ -57,11 +57,11 @@ public class TraditionalScoring implements BowlingScoring {
                 // STRIKE
                 // look two ahead if strike (strike = 10)
                 // look one ahead if not strike (spare = 10, otherwise just the pins)
-                if (i != 11 && i + 1 < frames.length) {
+                if (i + 1 < frames.length) {
                     sum += frames[i + 1][0];
                     sum += frames[i + 1][1];
 
-                    if (i != 11 && frames[i + 1][0] == 10) {
+                    if (frames[i + 1][0] == 10) {
                         // next frame is a strike
                         // look for one more frame
                         if (i + 2 < frames.length) {
