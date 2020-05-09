@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'eclipse'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11;
+targetCompatibility = JavaVersion.VERSION_11;
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+application {
+    mainClassName = 'dk.kec.bowling.Application'
+}
+
+run {
+    // forward gradle system properties to application's system properties
+    systemProperties(System.properties)
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.eclipse.dependsOn cleanEclipse
