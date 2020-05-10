@@ -3,7 +3,7 @@ Calculates the points scored in a bowling match
 
 [This is my answer to the task by SKAT](https://github.com/skat/bowling-opgave/blob/master/README.md)
 
-## Prerequcitions
+## Prerequisites
 Java 11.
 
 ## About the project
