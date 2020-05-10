@@ -2,6 +2,8 @@ package dk.kec.bowling;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -43,6 +45,27 @@ public class TestTraditionalScoring {
     }
 
     @Test
+    void testNullToken() {
+        int[][] points = { { 2, 0 }, { 8, 2 } };
+        int[] expectedPoints = { 2, 12 };
+
+        ScoreCard scoreCard = new ScoreCard(null, points);
+        Result result = scoring.calculate(scoreCard);
+        assertArrayEquals(expectedPoints, result.getPoints());
+        assertEquals(scoreCard.getToken(), result.getToken());
+    }
+
+    @Test
+    void testEmptyPoints() {
+        int[][] points = {};
+        ScoreCard scoreCard = new ScoreCard(token, points);
+        Result result = scoring.calculate(scoreCard);
+        assertNotNull(result.getPoints());
+        assertEquals(0, result.getPoints().length);
+        assertEquals(scoreCard.getToken(), result.getToken());
+    }
+
+    @Test
     void testNullScoreCard() {
         Assertions.assertThrows(RuntimeException.class, () -> {
             scoring.calculate(null);
@@ -53,19 +76,30 @@ public class TestTraditionalScoring {
     void testNullPoints() {
         int[][] points = null;
         ScoreCard scoreCard = new ScoreCard(token, points);
-        Result result = scoring.calculate(scoreCard);
-        assertEquals(null, result.getPoints());
-        assertEquals(scoreCard.getToken(), result.getToken());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            scoring.calculate(scoreCard);
+        }, "Null points should be accepted.");
     }
 
     @Test
-    void testNullToken() {
-        int[][] points = { { 2, 0 }, { 8, 2 } };
-        int[] expectedPoints = { 2, 12 };
+    void testToManyPoints() {
+        int[][] points = { { 10, 0 }, { 10, 0 }, { 10, 0 }, { 10, 0 }, { 10, 0 }, { 10, 0 }, { 10, 0 }, { 10, 0 },
+                { 10, 0 }, { 10, 0 }, { 10, 10 }, { 10, 10 } };
+        ScoreCard scoreCard = new ScoreCard(token, points);
 
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoring.calculate(scoreCard);
+        }, "12 points should not be accepted.");
+    }
+
+    @Test
+    void testBadFrames() {
+        int[][] points = { { 2 }, { 8, 2 } };
         ScoreCard scoreCard = new ScoreCard(null, points);
-        Result result = scoring.calculate(scoreCard);
-        assertArrayEquals(expectedPoints, result.getPoints());
-        assertEquals(scoreCard.getToken(), result.getToken());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoring.calculate(scoreCard);
+        }, "A number is missing in the first frame. That is not legal.");
     }
 }

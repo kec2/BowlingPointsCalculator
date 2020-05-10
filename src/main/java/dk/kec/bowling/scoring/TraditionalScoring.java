@@ -34,16 +34,10 @@ import dk.kec.bowling.model.ScoreCard;
 public class TraditionalScoring implements BowlingScoring {
 
     @Override
-    public Result calculate(ScoreCard points) {
-        if (points == null) {
-            throw new IllegalArgumentException("Null is not a legal argument");
-        }
+    public Result calculate(ScoreCard scoreCard) {
+        validateScoreCard(scoreCard);
 
-        if (points.getPoints() == null) {
-            return new Result(points.getToken(), null);
-        }
-
-        int[][] frames = points.getPoints();
+        int[][] frames = scoreCard.getPoints();
         // No more than 10 results
         int[] results = new int[Math.min(frames.length, 10)];
 
@@ -86,6 +80,31 @@ public class TraditionalScoring implements BowlingScoring {
             }
         }
 
-        return new Result(points.getToken(), results);
+        return new Result(scoreCard.getToken(), results);
+    }
+
+    private void validateScoreCard(ScoreCard scoreCard) {
+        if (scoreCard == null) {
+            throw new IllegalArgumentException("Null is not a legal argument.");
+        }
+
+        if (scoreCard.getPoints() == null) {
+            throw new IllegalArgumentException("Points in the score card can't be null. Its not a legal argument.");
+        }
+
+        if (scoreCard.getPoints() != null) {
+            int points = scoreCard.getPoints().length;
+            if (points > 11) {
+                throw new IllegalArgumentException("The number of points must be less than or equal to 11. " + points
+                        + " is not a legal argument.");
+            }
+        }
+
+        for (int[] frame : scoreCard.getPoints()) {
+            if (frame.length != 2) {
+                throw new IllegalArgumentException(
+                        "Each frame must consist of two numbers. " + frame.length + " is not a legal.");
+            }
+        }
     }
 }
