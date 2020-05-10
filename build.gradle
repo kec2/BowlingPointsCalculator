@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'eclipse'
+    id "com.github.spotbugs" version "4.0.8"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11;
@@ -31,6 +32,20 @@ run {
 
 test {
     useJUnitPlatform()
+}
+
+spotbugs {
+    ignoreFailures = false
+    effort = 'more'
+    reportLevel = 'high'
+}
+
+// To generate an HTML report instead of XML
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask){
+      reports {
+          xml.enabled = false
+          html.enabled = true
+    }
 }
 
 tasks.eclipse.dependsOn cleanEclipse
